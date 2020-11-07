@@ -25,22 +25,17 @@ test_imgs = []
 for j in train_pngs:
     train_imgs.append(cv2.imread(j))
     if j[16] == 'n':
-        print(j[15])
-        train_labels.append(int(j[15]))
+        train_labels.append(int(j[15])-1)
     else:
-        print(j[15:17])
-        train_labels.append(int(j[15:17]))
+        train_labels.append(int(j[15:17])-1)
 
 
 for i in test_pngs:
     test_imgs.append(cv2.imread(i))
-    if j[16] == 'n':
-        print(j[15])
-        test_labels.append(int(j[15]))
+    if i[15] == 'n':
+        test_labels.append(int(i[14])-1)
     else:
-        print(j[15:17])
-        test_labels.append(int(j[15:17]))
-
+        test_labels.append(int(i[14:16])-1)
 
 train_imgs = np.array(train_imgs, dtype=np.float32)
 test_imgs = np.array(test_imgs, dtype=np.float32)
@@ -58,7 +53,7 @@ train_labels_one_hot = to_categorical(train_labels)
 test_labels_one_hot = to_categorical(test_labels)
 
 # Get the InceptionV3 model so we can do transfer learning
-base_inception = MobileNetV2(weights='imagenet', include_top=False,
+base_inception = InceptionV3(weights='imagenet', include_top=False,
                              input_shape=(128, 128, 3))
 
 # Add a global spatial average pooling layer
@@ -79,8 +74,8 @@ model.compile(Adam(lr=.0001), loss='categorical_crossentropy',
               metrics=['accuracy'])
 model.summary()
 
-batch_size = 90
-epochs = 20
+batch_size = 80
+epochs = 15
 
 history = model.fit(train_imgs, train_labels_one_hot, batch_size=batch_size,
                     epochs=epochs, verbose=1, validation_data=(test_imgs, test_labels_one_hot))
