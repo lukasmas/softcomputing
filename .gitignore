@@ -3,3 +3,4 @@ previewTest/*
 previewTrain/*
 dataset/
 venv/
+test.h5
