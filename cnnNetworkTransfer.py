@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import keras
 import cv2
-
+from tensorflow.python.keras.applications.resnet import ResNet, ResNet50
 
 train_pngs = glob('./previewTrain/*.png')
 test_pngs = glob('./previewTest/*.png')
@@ -53,6 +53,8 @@ train_labels_one_hot = to_categorical(train_labels)
 test_labels_one_hot = to_categorical(test_labels)
 
 # Get the InceptionV3 model so we can do transfer learning
+#ResNet50
+#VGG16
 base_inception = InceptionV3(weights='imagenet', include_top=False,
                              input_shape=(128, 128, 3))
 
