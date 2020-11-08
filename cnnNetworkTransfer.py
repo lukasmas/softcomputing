@@ -54,7 +54,7 @@ test_labels_one_hot = to_categorical(test_labels)
 # Get the InceptionV3 model so we can do transfer learning
 # ResNet50
 # VGG16
-base_inception = VGG16(weights='imagenet', include_top=False,
+base_inception = InceptionV3(weights='imagenet', include_top=False,
                        input_shape=(128, 128, 3))
 
 # Add a global spatial average pooling layer
