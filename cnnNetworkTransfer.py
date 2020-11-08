@@ -25,17 +25,16 @@ test_imgs = []
 for j in train_pngs:
     train_imgs.append(cv2.imread(j))
     if j[16] == 'n':
-        train_labels.append(int(j[15])-1)
+        train_labels.append(int(j[15]) - 1)
     else:
-        train_labels.append(int(j[15:17])-1)
-
+        train_labels.append(int(j[15:17]) - 1)
 
 for i in test_pngs:
     test_imgs.append(cv2.imread(i))
     if i[15] == 'n':
-        test_labels.append(int(i[14])-1)
+        test_labels.append(int(i[14]) - 1)
     else:
-        test_labels.append(int(i[14:16])-1)
+        test_labels.append(int(i[14:16]) - 1)
 
 train_imgs = np.array(train_imgs, dtype=np.float32)
 test_imgs = np.array(test_imgs, dtype=np.float32)
@@ -53,10 +52,10 @@ train_labels_one_hot = to_categorical(train_labels)
 test_labels_one_hot = to_categorical(test_labels)
 
 # Get the InceptionV3 model so we can do transfer learning
-#ResNet50
-#VGG16
-base_inception = InceptionV3(weights='imagenet', include_top=False,
-                             input_shape=(128, 128, 3))
+# ResNet50
+# VGG16
+base_inception = VGG16(weights='imagenet', include_top=False,
+                       input_shape=(128, 128, 3))
 
 # Add a global spatial average pooling layer
 out = base_inception.output

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from glob import glob
 import cv2
-import numpy as np
 unified_dim = (128, 128)
 ddepth = cv2.CV_16S
 
