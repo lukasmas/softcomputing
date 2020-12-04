@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import keras
 import cv2
-from tensorflow.python.keras.applications.resnet import ResNet, ResNet50
+
 
 train_pngs = glob('./previewTrain/*.png')
 test_pngs = glob('./previewTest/*.png')
@@ -25,16 +25,17 @@ test_imgs = []
 for j in train_pngs:
     train_imgs.append(cv2.imread(j))
     if j[16] == 'n':
-        train_labels.append(int(j[15]) - 1)
+        train_labels.append(int(j[15])-1)
     else:
-        train_labels.append(int(j[15:17]) - 1)
+        train_labels.append(int(j[15:17])-1)
+
 
 for i in test_pngs:
     test_imgs.append(cv2.imread(i))
     if i[15] == 'n':
-        test_labels.append(int(i[14]) - 1)
+        test_labels.append(int(i[14])-1)
     else:
-        test_labels.append(int(i[14:16]) - 1)
+        test_labels.append(int(i[14:16])-1)
 
 train_imgs = np.array(train_imgs, dtype=np.float32)
 test_imgs = np.array(test_imgs, dtype=np.float32)
@@ -45,17 +46,20 @@ input_shape = (nRows, nCols, nDims)
 classes = np.unique(train_labels)
 nClasses = len(classes)
 
+print(classes)
+print(nClasses)
+
 train_imgs /= 255
 test_imgs /= 255
 
 train_labels_one_hot = to_categorical(train_labels)
 test_labels_one_hot = to_categorical(test_labels)
+print(train_labels_one_hot.shape)
+print(test_labels_one_hot.shape)
 
 # Get the InceptionV3 model so we can do transfer learning
-# ResNet50
-# VGG16
 base_inception = InceptionV3(weights='imagenet', include_top=False,
-                       input_shape=(128, 128, 3))
+                             input_shape=(128, 128, 3))
 
 # Add a global spatial average pooling layer
 out = base_inception.output
@@ -67,8 +71,8 @@ predictions = Dense(nClasses, activation='softmax')(out)
 model = Model(inputs=base_inception.input, outputs=predictions)
 
 # only if we want to freeze layers
-for layer in base_inception.layers:
-    layer.trainable = False
+# for layer in base_inception.layers:
+#     layer.trainable = False
 
 # Compile
 model.compile(Adam(lr=.0001), loss='categorical_crossentropy',
@@ -94,6 +98,7 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('percent_accuracy.png')
 plt.show()
 # summarize history for loss
 plt.plot(history.history['loss'])
@@ -102,4 +107,12 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('val_accuracy.png')
 plt.show()
+# plot confussion matrix
+plt.matshow(confusion_matrix(test_labels, y_pred))
+plt.title('Confusion Matrix')
+plt.colorbar()
+plt.ylabel('True Label')
+plt.xlabel('Predicated Label')
+plt.savefig('confusion_matrix.png')
